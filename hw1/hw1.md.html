@@ -1,0 +1,284 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><style>html { font-size: 100%; overflow-y: scroll; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+
+body{
+  color:#444;
+  font-family:Georgia, Palatino, 'Palatino Linotype', Times,
+              'Times New Roman', serif,
+              "Hiragino Sans GB", "STXihei", "微软雅黑";
+  font-size:12px;
+  line-height:1.5em;
+  background:#fefefe;
+  width: 45em;
+  margin: 10px auto;
+  padding: 1em;
+  outline: 1300px solid #FAFAFA;
+}
+
+a{ color: #0645ad; text-decoration:none;}
+a:visited{ color: #0b0080; }
+a:hover{ color: #06e; }
+a:active{ color:#faa700; }
+a:focus{ outline: thin dotted; }
+a:hover, a:active{ outline: 0; }
+
+span.backtick {
+  border:1px solid #EAEAEA;
+  border-radius:3px;
+  background:#F8F8F8;
+  padding:0 3px 0 3px;
+}
+
+::-moz-selection{background:rgba(255,255,0,0.3);color:#000}
+::selection{background:rgba(255,255,0,0.3);color:#000}
+
+a::-moz-selection{background:rgba(255,255,0,0.3);color:#0645ad}
+a::selection{background:rgba(255,255,0,0.3);color:#0645ad}
+
+p{
+margin:1em 0;
+}
+
+img{
+max-width:100%;
+}
+
+h1,h2,h3,h4,h5,h6{
+font-weight:normal;
+color:#111;
+line-height:1em;
+}
+h4,h5,h6{ font-weight: bold; }
+h1{ font-size:2.5em; }
+h2{ font-size:2em; border-bottom:1px solid silver; padding-bottom: 5px; }
+h3{ font-size:1.5em; }
+h4{ font-size:1.2em; }
+h5{ font-size:1em; }
+h6{ font-size:0.9em; }
+
+blockquote{
+color:#666666;
+margin:0;
+padding-left: 3em;
+border-left: 0.5em #EEE solid;
+}
+hr { display: block; height: 2px; border: 0; border-top: 1px solid #aaa;border-bottom: 1px solid #eee; margin: 1em 0; padding: 0; }
+
+
+pre , code, kbd, samp { 
+  color: #000; 
+  font-family: monospace; 
+  font-size: 0.88em; 
+  border-radius:3px;
+  background-color: #F8F8F8;
+  border: 1px solid #CCC; 
+}
+pre { white-space: pre; white-space: pre-wrap; word-wrap: break-word; padding: 5px;}
+pre code { border: 0px !important; }
+code { padding: 0 3px 0 3px; }
+
+b, strong { font-weight: bold; }
+
+dfn { font-style: italic; }
+
+ins { background: #ff9; color: #000; text-decoration: none; }
+
+mark { background: #ff0; color: #000; font-style: italic; font-weight: bold; }
+
+sub, sup { font-size: 75%; line-height: 0; position: relative; vertical-align: baseline; }
+sup { top: -0.5em; }
+sub { bottom: -0.25em; }
+
+ul, ol { margin: 1em 0; padding: 0 0 0 2em; }
+li p:last-child { margin:0 }
+dd { margin: 0 0 0 2em; }
+
+img { border: 0; -ms-interpolation-mode: bicubic; vertical-align: middle; }
+
+table { border-collapse: collapse; border-spacing: 0; }
+td { vertical-align: top; }
+
+@media only screen and (min-width: 480px) {
+body{font-size:14px;}
+}
+
+@media only screen and (min-width: 768px) {
+body{font-size:16px;}
+}
+
+@media print {
+  * { background: transparent !important; color: black !important; filter:none !important; -ms-filter: none !important; }
+  body{font-size:12pt; max-width:100%; outline:none;}
+  a, a:visited { text-decoration: underline; }
+  hr { height: 1px; border:0; border-bottom:1px solid black; }
+  a[href]:after { content: " (" attr(href) ")"; }
+  abbr[title]:after { content: " (" attr(title) ")"; }
+  .ir a:after, a[href^="javascript:"]:after, a[href^="#"]:after { content: ""; }
+  pre, blockquote { border: 1px solid #999; padding-right: 1em; page-break-inside: avoid; }
+  tr, img { page-break-inside: avoid; }
+  img { max-width: 100% !important; }
+  @page :left { margin: 15mm 20mm 15mm 10mm; }
+  @page :right { margin: 15mm 10mm 15mm 20mm; }
+  p, h2, h3 { orphans: 3; widows: 3; }
+  h2, h3 { page-break-after: avoid; }
+}
+</style></head><body><h2 id="ece-331-hw-1-blake-bourque">ECE 331 - HW 1 Blake Bourque</h2>
+
+<h3 id="due-1242013">Due: 1/24/2013</h3>
+
+<p>@Note: This was written in markdown which compiles to html. The pound <code>#</code> is reserved as a keyword in markdown. In the below document $ is used to indicate a command prompt.</p>
+
+<h2 id="1-copy-file-from-remote-server-with-scp">1.) Copy file from remote server with scp</h2>
+
+<p>$scp bbourque@hammer.eece.maine.edu:/usr/linux/public/ece331/fmemset-char.c .</p>
+
+<h2 id="2-system-information">2.) System Information</h2>
+
+<p>a.) Program:</p>
+
+<pre><code>#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;sys/utsname.h&gt;
+int main(void) 
+{
+    long pages = sysconf(_SC_PHYS_PAGES);       //Physical Pages
+    long pgsz = sysconf(_SC_PAGESIZE);          //Physical Page size
+    long proc = sysconf(_SC_NPROCESSORS_ONLN);  //Online Processors
+
+    printf("Pages: %ld \n", pages); 
+    printf("Page Size: %ld \n", pgsz); 
+    printf("Processors: %ld \n", proc);         //Online Processors
+
+    struct utsname my_uname;
+    if(uname(&amp;my_uname) == -1)
+         printf("uname call failed!");
+    else
+         printf("Machine:%s\n", my_uname.machine);
+}
+</code></pre>
+
+<p>b.) The "Hardware identifier":
+    The "Hardware identifier" <code>armv6l</code> is an indicator of the architecture of the processor. The RPi uses an ARM11 processor which is a RISC <code>(Reduced Instruction Set Computer)</code>. A desktop computer might report <code>x86_64</code> indicating that the computer uses the x86 64bit architecture. Note: Desktops are CISC <code>(Complex Instruction Set Computers)</code>.</p>
+
+<h2 id="3-mset">3.) mset</h2>
+
+<pre><code>////////////////////////////////////////////////////////////////////////////////
+// ECE 331 - HW1
+// Author: Blake Bourque
+// Date: 1/24/2013
+// Purpose: Implement a function `mset` which mimics the behavior of c's `memset`
+// purely in c code. The below code uses two strategise to be faster than the 
+// sample code given:
+// 1. Where possible set 64bits (8 bytes) of memory at a time
+// 2. Pointers &amp; Pointer arithmetic over indexing.
+////////////////////////////////////////////////////////////////////////////////
+
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;errno.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdint.h&gt;
+
+#define SIZE (128*1024*1024)
+
+////////////////////////////////////////////////////////////////////////////////
+// Forward Declarations
+////////////////////////////////////////////////////////////////////////////////
+void* mset(void *s, int c, size_t n);
+void check(void *s, int c, size_t n);
+
+////////////////////////////////////////////////////////////////////////////////
+// Main
+////////////////////////////////////////////////////////////////////////////////
+int main(int argc, char* argv[])
+{
+    char *m = (char *)malloc(SIZE);
+    if (m==NULL) {
+        perror("malloc");
+        return errno; 
+    }
+
+    mset(m, 0x8, SIZE);
+    //check(m, 0x8, SIZE); //uncomment this to check the output. (adds time)
+
+    free(m);
+    return(0);
+}
+////////////////////////////////////////////////////////////////////////////////
+// Function to imitate c's memset function
+////////////////////////////////////////////////////////////////////////////////
+void* mset(void *s, int c, size_t n) 
+//s is a pointer to the first byte
+//c is the value of each byte
+//n is number of bytes
+{
+    register uint64_t nVal = c;
+    nVal |= (nVal &lt;&lt; 8);
+    nVal |= (nVal &lt;&lt; 16);
+    nVal |= (nVal &lt;&lt; 32);
+
+    register uintptr_t ptr = (uintptr_t)s;                  
+    register uintptr_t end = (uintptr_t)(ptr + n);  
+
+    for (ptr; (ptr+8) &lt; end; ptr+=8) {
+        *((uint64_t *)(ptr)) = nVal;  //write 8 bytes
+    }
+
+    if( n % 8 != 0) {       //do the last few bytes individually 
+        ptr -= 8;               //Clear out the increment from the last loop check
+        for (ptr; ptr&lt;end; ptr++) {                  
+            *((unsigned char *)ptr)=(unsigned char)c;
+        }
+    }
+
+    return s;
+}
+////////////////////////////////////////////////////////////////////////////////
+// Function to ensure that the output is correct
+////////////////////////////////////////////////////////////////////////////////
+void check(void *s, int c, size_t n)
+{
+    register int numERR =0;
+
+    register uintptr_t ptr = (uintptr_t)s;
+    register uintptr_t end = (uintptr_t)(ptr + n);
+
+    for (ptr; ptr &lt; end; ptr++) {
+        if(*((unsigned char *)ptr)!=(unsigned char)c){
+            numERR ++;
+            printf("ERR @ Addy: %p\n", (void*)ptr);
+        }
+    }
+    printf("Error: %d\n", numERR);
+}
+</code></pre>
+
+<p>@Note: To test the fallback code change <code>#define SIZE (128*1024*1024)</code> to <code>#define SIZE (128*1024*1024-1)</code></p>
+
+<h2 id="4-install-top">4.) Install top:</h2>
+
+<p>First one must find the package which contains top, then that package can be installed.</p>
+
+<ol>
+<li>Find where top is installed: <br />
+$ which top</li>
+<li>determine what package contains top: <br />
+$ dpkg -S /usr/bin/top
+<ul>
+<li>One can Shortcut steps 1&amp;2 with: <br />
+$ dpkg -S `which top`</li>
+</ul></li>
+<li>Install package with apt <br />
+$ apt-get install procps</li>
+</ol>
+
+<h2 id="5-exploring-udevd">5.) Exploring udevd</h2>
+
+<p>a.) udevd lives in: <code>/sbin/udevd</code> <br />
+b.) Udevd captures events from the kernel and forwards them to udev. udev is a programs that manages device nodes in the <code>/dev</code> directory. <br />
+c.) udevd &amp; udev are a usability enhancement, without them a root user could manage the <code>/dev</code> directory. For the common user, udevd is important to have running as without it only statically defined devices can be accessed.    </p>
+
+<h2 id="6-permissions">6.) Permissions:</h2>
+
+<p>a.) $ chmod g+rx,o+r opamp.m <br />
+b.) $ chmod og+r,u-w opamp.m</p>
+</body>
