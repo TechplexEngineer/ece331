@@ -23,4 +23,15 @@ Blake Bourque
 //install package
 apt-get install procps
 
+5.) 
+//udevd lives in:
+/sbin/udevd
+
+Udev processes rules on various kernel events, mostly which are related to device access.
+Udev is important to have running as without it only statically defined device can be accessed.
+
+6.) Permissions:
+a.) chmod g+rx,o+r opamp.m
+b.) chmod og+r,u-w
+
 
