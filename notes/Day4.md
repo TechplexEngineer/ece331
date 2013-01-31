@@ -47,6 +47,7 @@
 
 ---
 # links
+@ see extfs_links.pdf
 
 1. hard links
 	$ touch x
@@ -63,6 +64,7 @@ $ ls -l x y a b
 
 ----
 # Filesystem
+@ see extfs_links.pdf
 
 $ tail /var/log/syslog //last few lines
 $ tailf /var/log/syslog //watches for changes and prits them
@@ -87,6 +89,8 @@ $ mouunt -o loop,offset=62914560 rasbian.img /mnt1
 
 ----
 # GCC & Compiling
+
+see compiling.pdf
 
 
 
