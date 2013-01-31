@@ -34,8 +34,8 @@ int main(int argc, char* argv[])
 		return errno; 
 	}
 	
-	mset(m, 0x8, SIZE);
-	//check(m, 0x8, SIZE); //uncomment this to check the output. (adds time)
+	mset(m+1, 0x8, SIZE-1);
+	check(m, 0x8, SIZE); //uncomment this to check the output. (adds time)
 
 	free(m);
 	return(0);

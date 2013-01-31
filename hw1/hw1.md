@@ -135,6 +135,8 @@ b.) The "Hardware identifier":
 
 @Note: To test the fallback code change `#define SIZE (128*1024*1024)` to `#define SIZE (128*1024*1024-1)`
 
+@Time: .462s
+
 
 ## 4.) Install top:
 First one must find the package which contains top, then that package can be installed.
