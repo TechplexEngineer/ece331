@@ -134,7 +134,9 @@
 `$ gcc mset.c -S`
 
 ## 5.) objdump an executeable with source intermixed
-a.) `$ objdump -SlC mset > dump`    
+a.) 
+`$ gcc -g -c mset.c -o mset`  
+`$ objdump -SlC mset > dump`    
 b.) 7 assembly instructions in the main loop
 
 

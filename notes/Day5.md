@@ -1,17 +1,17 @@
-# Day 5 - 1/29/13 Blake Bourque
+Title: Day 5
+Date: 1/29/13
+Published: true
 
 ## Questions on hw2
-mmap confusing function
-6 args
-Args:
-	-NULL
-	-pagesize
-	-set protection read only
-	-flags to sared map
-	-file descriptor from dev mem
-	-set offset
-return pointer in our address space
-index into it
+mmap is a confusing function, which has 6 Args: 
+-	NULL
+-	pagesize
+-	set protection read only
+-	flags to sared map
+-	file descriptor from dev mem
+-	set offset
+
+It returns a pointer in our address space, so we can index into it
 
 
 ## Make and RegularExpressions (below)
@@ -90,7 +90,7 @@ CFLAGS, CC, FC, LD, AR, AS, F77FLAGS, LDFLAGS
 1. You can use a hyphen inside a character class to specify a range of characters.
 1. Typing a caret after the opening square bracket will match any character that is not in the character class. (negate the character class)
 
-### Shorthand Character Classes
+### Shorthand Character Classes (Recommend not using these)
 1. `\d` matches a single character that is a digit
 1. `\w` matches a "word character" (alphanumeric characters plus underscore)
 1. `\s` matches a whitespace character (includes tabs and line breaks)

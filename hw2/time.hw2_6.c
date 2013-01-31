@@ -32,7 +32,7 @@ void handleClose(int fd);
 int main(int argc, char* argv[])
 {
 	uint64_t value = getSystemTime();
-	if(value == -1)
+	if (value == -1)
 		return errno;
 	printf("Time (us): %llx\n", value);
 	for(int i=500000; i>0; i--);
@@ -44,24 +44,24 @@ uint64_t getSystemTime() //returns -1 on error
 {
 	static uint64_t* addy = NULL;
 
-	if(addy != NULL)
+	if (addy != NULL)
 		return *addy;
 
 	int fd = open("/dev/mem", O_RDONLY);
-	if(fd == -1) { //error checking
+	if (fd == -1) { //error checking
 		perror("open");
 		return -1; 
 	}
 
 	long pgsz = sysconf(_SC_PAGESIZE);					//Physical Page size
-	if(pgsz == -1) {
+	if (pgsz == -1) {
 		perror("sysconf");
 		handleClose(fd);
 		return -1;
 	}
 
 	void* v_ptr = mmap(NULL, pgsz, PROT_READ, MAP_SHARED, fd, 0x20003000);
-	if(v_ptr == MAP_FAILED || v_ptr == NULL) {
+	if (v_ptr == MAP_FAILED || v_ptr == NULL) {
 		perror("mmap");
 		handleClose(fd);
 		return -1;
@@ -77,6 +77,6 @@ uint64_t getSystemTime() //returns -1 on error
 //closes the file, handles associated errors with perror
 void handleClose(int fd) 
 {
-	if(close(fd) != 0) //error checking
+	if (close(fd) != 0) //error checking
 		perror("close");
 }

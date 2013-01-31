@@ -1,5 +1,8 @@
-# Questions on HW1
+Title: Day 4
+Date: 1-24-13
+Published: true
 
+# Questions on HW1
 
 	//end is pointer to end of buffer
 	uintptr_t p64 
@@ -46,8 +49,8 @@
 	}
 
 ---
-# links
-@ see extfs_links.pdf
+# Links
+@ see [extfs_links.pdf](./extfs_links.pdf)
 
 1. hard links
 	$ touch x
@@ -64,7 +67,7 @@ $ ls -l x y a b
 
 ----
 # Filesystem
-@ see extfs_links.pdf
+@ see [extfs_links.pdf](./extfs_links.pdf)
 
 $ tail /var/log/syslog //last few lines
 $ tailf /var/log/syslog //watches for changes and prits them

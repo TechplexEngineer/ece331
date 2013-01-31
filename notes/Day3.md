@@ -1,3 +1,7 @@
+Title: Day 3
+Date: 1/22/13
+Published: true
+
 # cd
 # mkdir junk
 # cd junk
