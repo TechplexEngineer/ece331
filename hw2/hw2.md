@@ -1,8 +1,8 @@
 ## ECE 331 - HW 2 Blake Bourque
 ### Due: 1/31/2013
 
-@Note: This was written in markdown which compiles to html. The pound `#` is reserved as a keyword in markdown. In the below document $ is used to indicate a command prompt.
-## 1.) Program to count the number of lines in matched(glob) files
+@Note: This was written in markdown which compiles to html. The pound `#` is reserved as a keyword in markdown. In the below document `$` is used to indicate a command prompt.
+## 1.) Program to count the number of lines in matched (glob) files
 
 	////////////////////////////////////////////////////////////////////////////////
 	// ECE 331 - HW2
@@ -140,18 +140,213 @@ b.) 7 assembly instructions in the main loop
 
 ## 6.) Custom program timer
 
-	<code here>
+	////////////////////////////////////////////////////////////////////////////////
+	// ECE 331 - HW2
+	// Author: Blake Bourque
+	// Date: 1/31/2013
+	// Purpose: function to read the RPi's free running timer.
+	// @note: The timer increments once each microsecond.
+	////////////////////////////////////////////////////////////////////////////////
 
-## 7.) Counter Header
+	//sysconf():
+	#include <unistd.h>
+	//uint*:
+	#include <stdint.h>
+	//printf:
+	#include <stdio.h>
+	//mmap:
+	#include <sys/mman.h>
+	//open:
+	#include <sys/types.h>
+	#include <sys/stat.h>
+	#include <fcntl.h>
+	//errors:
+	#include <errno.h>
 
-	<code here>
+	#include "time.hw2_6.h"
 
-## 8.) 
+	// ***Forward declarations***
 
-a.) Modified mset code
+	//closes the file, handles associated errors with perror
+	void handleClose(int fd);
 
-b.) compile & link
+	uint64_t getSystemTime() //returns -1 on error
+	{
+		static uint64_t* addy = NULL;
 
-c.) System timer counts:
+		if(addy != NULL)
+			return *addy;
 
-d.) Do the times agree?
+		int fd = open("/dev/mem", O_RDONLY);
+		if(fd == -1) { //error checking
+			perror("open");
+			return -1; 
+		}
+
+		long pgsz = sysconf(_SC_PAGESIZE);					//Physical Page size
+		if(pgsz == -1) {
+			perror("sysconf");
+			handleClose(fd);
+			return -1;
+		}
+
+		void* v_ptr = mmap(NULL, pgsz, PROT_READ, MAP_SHARED, fd, 0x20003000);
+		if(v_ptr == MAP_FAILED || v_ptr == NULL) {
+			perror("mmap");
+			handleClose(fd);
+			return -1;
+		}
+		char* c_ptr = ((char*)v_ptr)+4; //mmap doesn't want to access the unaligned memory. Move ptr after mapping
+		addy = (uint64_t*)c_ptr;
+		handleClose(fd);
+		return *addy;
+	}
+
+	//closes the file, handles associated errors with perror
+	void handleClose(int fd) 
+	{
+		if(close(fd) != 0) //error checking
+			perror("close");
+	}
+
+## 7.) Header for my getSystemTime function
+
+	#ifndef __RPi_sys_time__
+	#define __RPi_sys_time__
+
+	// Get the system time, from the RPi's free running clock.
+	// The value increments by 1 every microsecond.
+	uint64_t getSystemTime();
+
+	#endif
+
+## 8.) Timing mset using code from #6
+
+a.) Modified mset code:
+	
+	////////////////////////////////////////////////////////////////////////////////
+	// ECE 331 - HW1
+	// Author: Blake Bourque
+	// Date: 1/24/2013
+	// Purpose: Implement a function `mset` which mimics the behavior of c's `memset`
+	// purely in c code. The below code uses two strategise to be faster than the 
+	// sample code given:
+	// 1. Where possible set 64bits (8 bytes) of memory at a time
+	// 2. Pointers & Pointer arithmetic over indexing.
+	// @note: code to measure time added.
+	////////////////////////////////////////////////////////////////////////////////
+
+	#include <stdio.h>
+	#include <stdlib.h>
+	#include <errno.h>
+	#include <string.h>
+	#include <stdint.h>
+
+	#include "time.hw2_6.h"
+
+	#define SIZE (128*1024*1024)
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Forward Declarations
+	////////////////////////////////////////////////////////////////////////////////
+	void* mset(void *s, int c, size_t n);
+	void check(void *s, int c, size_t n);
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Main
+	////////////////////////////////////////////////////////////////////////////////
+	int main(int argc, char* argv[])
+	{
+		uint64_t start = getSystemTime();
+		if(start == -1)
+			return errno;
+
+		char *m = (char *)malloc(SIZE);
+		if (m==NULL) {
+			perror("malloc");
+			return errno; 
+		}
+		
+		mset(m, 0x8, SIZE);
+		//check(m, 0x8, SIZE); //uncomment this to check the output. (adds time)
+
+		free(m);
+		uint64_t fini = getSystemTime();
+		if(fini == -1)
+			return errno;
+		printf("Time: %lld\n",(fini-start));
+		return 0;
+	}
+	////////////////////////////////////////////////////////////////////////////////
+	// Function to imitate c's memset function
+	////////////////////////////////////////////////////////////////////////////////
+	void* mset(void *s, int c, size_t n) 
+	//s is a pointer to the first byte
+	//c is the value of each byte
+	//n is number of bytes
+	{
+
+		register uint64_t nVal = c;
+		nVal |= (nVal << 8);
+		nVal |= (nVal << 16);
+		nVal |= (nVal << 32);
+
+		register uintptr_t ptr = (uintptr_t)s;					
+		register uintptr_t end = (uintptr_t)(ptr + n);	
+		
+		for (ptr; (ptr+8) < end; ptr+=8) {
+			*((uint64_t *)(ptr)) = nVal;  //write 8 bytes
+		}
+
+		if( n % 8 != 0) {		//do the last few bytes individually 
+			ptr -= 8; 				//Clear out the increment from the last loop check
+			for (ptr; ptr<end; ptr++) {                  
+				*((unsigned char *)ptr)=(unsigned char)c;
+			}
+		}
+
+		return s;
+	}
+	////////////////////////////////////////////////////////////////////////////////
+	// Function to ensure that the output is correct
+	////////////////////////////////////////////////////////////////////////////////
+	void check(void *s, int c, size_t n)
+	{
+		register int numERR =0;
+
+		register uintptr_t ptr = (uintptr_t)s;
+		register uintptr_t end = (uintptr_t)(ptr + n);
+
+		for (ptr; ptr < end; ptr++) {
+			if(*((unsigned char *)ptr)!=(unsigned char)c){
+				numERR ++;
+				printf("ERR @ Addy: %p\n", (void*)ptr);
+			}
+		}
+		printf("Error: %d\n", numERR);
+	}
+
+
+b.) Compile & Link getSystemTime library    
+In my makefile:
+
+	mset: mset.hw2_5.o time.hw2_6.o
+		${CC} -g -o $@ $^ 
+
+or(as done by make):  
+`$ cc -std=gnu99   -c -o mset.hw2_5.o mset.hw2_5.c`  
+`$ cc -std=gnu99   -c -o time.hw2_6.o time.hw2_6.c`  
+`$ cc -g -o mset mset.hw2_5.o time.hw2_6.o`
+
+or (using gcc):  
+`$ gcc -c -o mset.hw2_5.o mset.hw2_5.c`  
+`$ gcc -c -o time.hw2_6.o time.hw2_6.c`  
+`$ gcc -o mset mset.hw2_5.o time.hw2_6.o`
+
+c.) System timer counts: `433,221`
+
+d.) The times do not agree. Possible reasons they don't match:
+1. My getSystemTime function has the overhead of closing, then opening `/dev/mem` inside the period being timed.
+2. the time function used previously runs as part of the shell, which indicates that setup and teardown of the mset program is included in the time. Conversely, my getSystemTime function only counts the time between the calling of main, and the end of freeing memory.
+
+Even though the values reported aren't identical 0.433221s(getSystemTime) and 0.437s(time) the are very close, I would argue close enough.

@@ -7,6 +7,7 @@
 // sample code given:
 // 1. Where possible set 64bits (8 bytes) of memory at a time
 // 2. Pointers & Pointer arithmetic over indexing.
+// @note: code to measure time added.
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <stdio.h>
@@ -47,7 +48,7 @@ int main(int argc, char* argv[])
 	uint64_t fini = getSystemTime();
 	if(fini == -1)
 		return errno;
-	printf("Time: %lld",(start-fini));
+	printf("Time: %lld\n",(fini-start));
 	return 0;
 }
 ////////////////////////////////////////////////////////////////////////////////

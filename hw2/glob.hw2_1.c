@@ -29,6 +29,7 @@
 
 //closes the file, handles associated errors with perror
 void handleClose(int fd);
+//Prints help when user types ?
 void printHelp(char* prgmName);
 
 int main(int argc, char* argv[])
